@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %}Career Tracker - CareerCoach AI{% endblock %}
+
+{% block content %}
+<div class="chat-hero">
+  <span class="hero-badge"><span class="dot"></span> Career Tracker</span>
+  <h3><i class="bi bi-bullseye me-2"></i>Career Readiness Dashboard</h3>
+  <p>Pick a target role, see your skill gaps, and follow a personalized roadmap.</p>
+</div>
+
+<div class="container py-5" id="careerDashboard"
+     data-selected-role="{{ selected_role_key or '' }}"
+     data-has-resume="{{ 'true' if has_resume else 'false' }}">
+
+  {% if not has_resume %}
+  <div class="alert alert-info mb-4">
+    <i class="bi bi-info-circle me-1"></i>
+    No resume on file yet &mdash; upload one on the
+    <a href="{{ url_for('upload_resume') }}">Upload Resume</a> page for a more accurate skill comparison.
+    You can still explore roles and take assessments in the meantime.
+  </div>
+  {% endif %}
+
+  <!-- ============== ROLE PICKER ============== -->
+  <div class="analysis-card">
+    <div class="section-title">
+      <div class="section-icon"><i class="bi bi-crosshair"></i></div>
+      <h2>Choose a Target Role</h2>
+    </div>
+
+    <div class="role-picker-grid" id="rolePickerGrid">
+      {% for role in roles %}
+      <button
+        type="button"
+        class="role-pick-card {{ 'is-selected' if role.role_key == preselect_role_key else '' }}"
+        data-role-key="{{ role.role_key }}"
+      >
+        <div class="role-pick-icon"><i class="bi {{ role.icon }}"></i></div>
+        <div class="role-pick-name">{{ role.name }}</div>
+        <div class="role-pick-desc">{{ role.description }}</div>
+      </button>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-4 {{ '' if preselect_role_key else 'd-none' }}" id="roleSubmitWrap">
+      <button type="button" class="btn btn-primary px-4" id="roleSubmitBtn" {{ '' if preselect_role_key else 'disabled' }}>
+        Confirm &amp; Start Tracking <i class="bi bi-arrow-right ms-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============== DASHBOARD BODY (revealed only after Submit/Continue is clicked) ============== -->
+  <div id="careerDashboardBody" class="d-none">
+
+    <!-- Readiness overview -->
+    <div class="analysis-card reveal" id="readinessCard">
+      <div class="section-title">
+        <div class="section-icon"><i class="bi bi-speedometer"></i></div>
+        <h2>Career Readiness &mdash; <span id="readinessRoleName">{{ gap_analysis.role.name if gap_analysis else "" }}</span></h2>
+      </div>
+
+      <div class="completeness-row">
+        <div class="completeness-ring is-light">
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="readinessRingGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#4f46e5" />
+                <stop offset="100%" stop-color="#06b6d4" />
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="50" cy="50" r="42" />
+            <circle
+              class="ring-fg js-ring"
+              id="readinessRing"
+              cx="50" cy="50" r="42"
+              stroke="url(#readinessRingGrad)"
+              stroke-dasharray="264"
+              stroke-dashoffset="264"
+              data-offset="{{ 264 - (264 * (gap_analysis.readiness_pct if gap_analysis else 0) / 100) }}"
+            />
+          </svg>
+          <div class="completeness-ring-label is-light" id="readinessPctLabel">{{ gap_analysis.readiness_pct if gap_analysis else 0 }}%</div>
+        </div>
+        <div class="completeness-text">
+          <b>Career-readiness score</b> &mdash; blends the skills you already have for this role with
+          your assessment results. Take skill assessments and complete roadmap stages to raise it.
+        </div>
+      </div>
+    </div>
+
+    <!-- Strengths / Gaps / Improve -->
+    <div class="analysis-card reveal" id="skillComparisonCard">
+      <div class="section-title">
+        <div class="section-icon"><i class="bi bi-bar-chart-line"></i></div>
+        <h2>Skill Comparison</h2>
+      </div>
+
+      <p class="text-muted small mb-3">
+        Based on your latest assessment attempt for each skill &mdash;
+        80&ndash;100% is a Strength, 60&ndash;79% Needs Improvement, 0&ndash;59% is a Skill Gap.
+        Skills you haven't taken an assessment for yet are marked Not Yet Assessed.
+      </p>
+      <div class="gap-columns" id="gapColumns">
+        <div class="gap-column gap-strengths">
+          <div class="gap-column-title"><i class="bi bi-check-circle-fill"></i> Strengths</div>
+          <div class="gap-skill-list" id="gapStrengthsList"></div>
+        </div>
+        <div class="gap-column gap-improve">
+          <div class="gap-column-title"><i class="bi bi-arrow-repeat"></i> Needs Improvement</div>
+          <div class="gap-skill-list" id="gapImproveList"></div>
+        </div>
+        <div class="gap-column gap-missing">
+          <div class="gap-column-title"><i class="bi bi-exclamation-triangle-fill"></i> Skill Gaps</div>
+          <div class="gap-skill-list" id="gapMissingList"></div>
+        </div>
+        <div class="gap-column gap-not-assessed">
+          <div class="gap-column-title"><i class="bi bi-question-circle-fill"></i> Not Yet Assessed</div>
+          <div class="gap-skill-list" id="gapNotAssessedList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roadmap -->
+    <div class="analysis-card reveal" id="roadmapCard">
+      <div class="recommendation-header">
+        <h2><i class="bi bi-signpost-split me-1"></i> Personalized Roadmap</h2>
+        <button class="btn btn-outline-primary btn-sm" id="reassessBtn">
+          <i class="bi bi-arrow-clockwise me-1"></i> Reassess &amp; Regenerate
+        </button>
+      </div>
+
+      <div class="roadmap-tabs" id="roadmapTabs">
+        <button class="roadmap-tab is-active" data-stage="beginner">Beginner</button>
+        <button class="roadmap-tab" data-stage="intermediate">Intermediate</button>
+        <button class="roadmap-tab" data-stage="advanced">Advanced</button>
+      </div>
+
+      <div id="roadmapStageContent"></div>
+    </div>
+
+    <!-- Progress trend -->
+    <div class="analysis-card reveal" id="progressCard">
+      <div class="section-title">
+        <div class="section-icon"><i class="bi bi-graph-up"></i></div>
+        <h2>Assessment History &amp; Progress</h2>
+      </div>
+      <div id="progressChartEmpty" class="empty-message">
+        No assessments taken yet. Complete a skill assessment from the roadmap above to start tracking progress.
+      </div>
+      <canvas id="progressChart" height="90" style="display:none;"></canvas>
+      <div id="assessmentHistoryList" class="assessment-history-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============== QUIZ MODAL ============== -->
+<div class="quiz-modal-backdrop" id="quizModalBackdrop">
+  <div class="quiz-modal">
+    <div class="quiz-modal-header">
+      <h4 id="quizModalTitle">Skill Assessment</h4>
+      <button type="button" class="quiz-modal-close" id="quizModalClose" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="quiz-modal-body" id="quizModalBody">
+      <div class="loading-box">
+        <div class="spinner-border"></div>
+        <p>Loading assessment...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Data passed from the server for the currently selected role
+  // (kept as JSON so the JS file can run the same rendering logic
+  // whether the page just loaded or the user just switched roles).
+  window.__CAREER_DASHBOARD_INITIAL__ = {
+    confirmedRoleKey: {{ (selected_role_key or "")|tojson }},
+    preselectRoleKey: {{ (preselect_role_key or "")|tojson }},
+    gapAnalysis: {{ gap_analysis|tojson if gap_analysis else "null" }},
+    roadmap: {{ roadmap|tojson if roadmap else "null" }},
+    progressMap: {{ progress_map|tojson }},
+    availableQuizSkills: {{ available_quiz_skills|tojson }},
+    skillNameToKey: {{ skill_name_to_key|tojson }}
+  };
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/career_dashboard.js') }}"></script>
+{% endblock %}

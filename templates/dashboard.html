@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - CareerCoach AI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Welcome hero -->
+  <div class="dashboard-hero mb-4">
+    <span class="hero-badge"><span class="dot"></span> Your Career Hub</span>
+    <h3 class="mb-1">Welcome, {{ session.get('user_name') }} 👋</h3>
+    <p>Here is everything you can do with CareerCoach AI.</p>
+
+    <div class="completeness-row">
+      <div class="completeness-ring">
+        <svg viewBox="0 0 100 100">
+          <circle class="ring-bg" cx="50" cy="50" r="42" />
+          <circle
+            class="ring-fg js-ring"
+            cx="50" cy="50" r="42"
+            stroke-dasharray="264"
+            stroke-dashoffset="264"
+            data-offset="{{ 0 if resume else 264 }}"
+          />
+        </svg>
+        <div class="completeness-ring-label">{{ "100%" if resume else "0%" }}</div>
+      </div>
+      <div class="completeness-text">
+        {% if resume %}
+          <b>Resume on file.</b> {{ resume.filename }} is ready &mdash; view your full AI analysis anytime.
+        {% else %}
+          <b>No resume uploaded yet.</b> Upload your resume to unlock AI-powered skill and career insights.
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard cards -->
+  <div class="row g-4 mt-1">
+    <div class="col-sm-6 col-lg-4">
+      <a href="{{ url_for('upload_resume') }}" class="text-decoration-none text-dark">
+        <div class="dashboard-card">
+          <div class="card-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+          <h5>Upload Resume</h5>
+          <p class="mb-0">Upload a PDF or DOCX resume.</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-sm-6 col-lg-4">
+      <a href="{{ url_for('analysis') }}" class="text-decoration-none text-dark">
+        <div class="dashboard-card">
+          <div class="card-icon"><i class="bi bi-search"></i></div>
+          <h5>Resume Analysis</h5>
+          <p class="mb-0">See skills, education and projects.</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-sm-6 col-lg-4">
+      <a href="{{ url_for('analysis') }}#recommendation" class="text-decoration-none text-dark">
+        <div class="dashboard-card">
+          <div class="card-icon"><i class="bi bi-compass"></i></div>
+          <h5>Career Recommendation</h5>
+          <p class="mb-0">AI career roles and roadmap.</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-sm-6 col-lg-4">
+      <a href="{{ url_for('chatbot') }}" class="text-decoration-none text-dark">
+        <div class="dashboard-card">
+          <div class="card-icon"><i class="bi bi-chat-dots"></i></div>
+          <h5>AI Chatbot</h5>
+          <p class="mb-0">Ask your career questions.</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-sm-6 col-lg-4">
+      <a href="{{ url_for('profile') }}" class="text-decoration-none text-dark">
+        <div class="dashboard-card">
+          <div class="card-icon"><i class="bi bi-person-circle"></i></div>
+          <h5>User Profile</h5>
+          <p class="mb-0">Your details and resume status.</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- Small status card -->
+    <div class="col-sm-6 col-lg-4">
+      <div class="dashboard-card status-card">
+        <div class="card-icon"><i class="bi bi-clipboard-check"></i></div>
+        <h5>Resume Status</h5>
+        <p class="mb-0">
+          {% if resume %}Uploaded: {{ resume.filename }}{% else %}No resume uploaded yet{% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

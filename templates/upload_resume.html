@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Upload Resume - CareerCoach AI{% endblock %}
+
+{% block content %}
+<div class="upload-shell">
+  <div class="upload-card">
+    <div class="text-center mb-2">
+      <div class="auth-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+      <h4 class="mt-2 mb-1">Upload your Resume</h4>
+      <p class="text-muted small">Allowed file types: PDF and DOCX (max 5 MB)</p>
+    </div>
+
+    <!-- enctype is required for file uploads -->
+    <form method="POST" action="{{ url_for('upload_resume') }}" enctype="multipart/form-data">
+      <div class="dropzone">
+        <div class="dz-icon"><i class="bi bi-file-earmark-arrow-up"></i></div>
+        <div class="dz-title">Drag &amp; drop your resume here</div>
+        <div class="dz-sub">or click to browse from your device</div>
+        <span class="dz-filename"><i class="bi bi-file-earmark-check"></i> <span></span></span>
+        <input type="file" name="resume" accept=".pdf,.docx" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Upload Resume</button>
+    </form>
+
+    <div class="upload-format-row">
+      <span><i class="bi bi-file-earmark-pdf me-1"></i>PDF</span>
+      <span><i class="bi bi-file-earmark-word me-1"></i>DOCX</span>
+      <span><i class="bi bi-shield-check me-1"></i>Secure Upload</span>
+    </div>
+  </div>
+</div>
+{% endblock %}

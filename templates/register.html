@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Register - CareerCoach AI{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+
+  <!-- Visual side -->
+  <div class="auth-visual">
+    <span class="hero-badge"><span class="dot"></span> AI-Powered Career Platform</span>
+    <h2>Start Building Your<br /><span class="grad">Career Intelligence</span></h2>
+    <p>Create a free account to upload your resume and get AI-driven career insights in minutes.</p>
+
+    <ul class="auth-points">
+      <li><i class="bi bi-check-circle-fill"></i> AI resume analysis in seconds</li>
+      <li><i class="bi bi-check-circle-fill"></i> Personalized career recommendations</li>
+      <li><i class="bi bi-check-circle-fill"></i> 24/7 AI career chatbot</li>
+    </ul>
+  </div>
+
+  <!-- Form side -->
+  <div class="auth-form-side">
+    <div class="auth-card">
+      <div class="auth-icon"><i class="bi bi-person-plus"></i></div>
+      <h4>Create your account</h4>
+      <p class="auth-subtitle">Start building your AI-powered career plan.</p>
+
+      <!-- Registration form (validated in Flask and by the browser) -->
+      <form method="POST" action="{{ url_for('register') }}">
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <div class="input-icon-group">
+            <i class="bi bi-person"></i>
+            <input type="text" name="name" class="form-control" required />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <div class="input-icon-group">
+            <i class="bi bi-envelope"></i>
+            <input type="email" name="email" class="form-control" required />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <div class="input-icon-group">
+            <i class="bi bi-lock"></i>
+            <input type="password" name="password" class="form-control" minlength="6" required />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+      </form>
+
+      <p class="auth-switch">
+        Already registered? <a href="{{ url_for('login') }}">Login here</a>
+      </p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block title %}CareerCoach AI - Home{% endblock %}
+
+{% block content %}
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-grid-overlay"></div>
+  <div class="container">
+    <div class="hero-row">
+
+      <!-- Left: rotating headline slides -->
+      <div>
+        <span class="hero-badge"><span class="dot"></span> AI-Powered Career Platform</span>
+
+        <div class="hero-slides" id="heroSlides">
+
+          <div class="hero-slide is-active">
+            <h1>Context-Aware <span class="grad">AI</span><br />for Your Career</h1>
+            <p class="lead">
+              Upload your resume and let AI understand your skills,
+              experience and education to guide your next career move.
+            </p>
+          </div>
+
+          <div class="hero-slide">
+            <h1>From Resume<br /><span class="grad">to Roadmap</span></h1>
+            <p class="lead">
+              Instant, structured analysis of your skills, projects and
+              certifications &mdash; organized the way recruiters read them.
+            </p>
+          </div>
+
+          <div class="hero-slide">
+            <h1>Your Personal<br /><span class="grad">AI Career Coach</span></h1>
+            <p class="lead">
+              Ask questions about interviews, skills and career paths and get
+              instant, personalized AI guidance whenever you need it.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="hero-actions">
+          <a href="{{ url_for('register') }}" class="btn btn-track solid">Get Started Free</a>
+          <a href="{{ url_for('login') }}" class="btn btn-track ghost">Login</a>
+        </div>
+
+        <div class="hero-carousel-nav">
+          <button class="hero-carousel-arrow" id="heroPrev" aria-label="Previous"><i class="bi bi-chevron-left"></i></button>
+          <div class="hero-carousel-dots" id="heroDots">
+            <span class="dot-track is-active" data-slide="0"></span>
+            <span class="dot-track" data-slide="1"></span>
+            <span class="dot-track" data-slide="2"></span>
+          </div>
+          <button class="hero-carousel-arrow" id="heroNext" aria-label="Next"><i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Right: original career-network illustration -->
+      <div class="hero-visual">
+        <svg viewBox="0 0 480 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="nodeGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#818cf8" />
+              <stop offset="100%" stop-color="#22d3ee" />
+            </linearGradient>
+          </defs>
+
+          <!-- connecting links -->
+          <g stroke="url(#nodeGrad)" stroke-width="1.5" fill="none" opacity="0.55">
+            <path class="link-line" d="M240 210 L110 110" />
+            <path class="link-line" d="M240 210 L370 90" />
+            <path class="link-line" d="M240 210 L90 260" />
+            <path class="link-line" d="M240 210 L380 270" />
+            <path class="link-line" d="M240 210 L230 360" />
+            <path class="link-line" d="M110 110 L90 260" />
+            <path class="link-line" d="M370 90 L380 270" />
+          </g>
+
+          <!-- outer nodes: resume / skills / jobs / growth -->
+          <g>
+            <circle class="node-pulse" cx="110" cy="110" r="26" fill="rgba(129,140,248,.15)" />
+            <circle cx="110" cy="110" r="15" fill="#1a2352" stroke="#818cf8" stroke-width="2" />
+            <text x="110" y="115" text-anchor="middle" font-size="14" fill="#c7cde8" font-family="sans-serif">&#128196;</text>
+          </g>
+
+          <g>
+            <circle class="node-pulse" cx="370" cy="90" r="26" fill="rgba(34,211,238,.15)" />
+            <circle cx="370" cy="90" r="15" fill="#1a2352" stroke="#22d3ee" stroke-width="2" />
+            <text x="370" y="95" text-anchor="middle" font-size="14" fill="#c7cde8" font-family="sans-serif">&#9889;</text>
+          </g>
+
+          <g>
+            <circle class="node-pulse" cx="90" cy="260" r="26" fill="rgba(129,140,248,.15)" />
+            <circle cx="90" cy="260" r="15" fill="#1a2352" stroke="#818cf8" stroke-width="2" />
+            <text x="90" y="265" text-anchor="middle" font-size="14" fill="#c7cde8" font-family="sans-serif">&#127891;</text>
+          </g>
+
+          <g>
+            <circle class="node-pulse" cx="380" cy="270" r="26" fill="rgba(34,211,238,.15)" />
+            <circle cx="380" cy="270" r="15" fill="#1a2352" stroke="#22d3ee" stroke-width="2" />
+            <text x="380" y="275" text-anchor="middle" font-size="14" fill="#c7cde8" font-family="sans-serif">&#128188;</text>
+          </g>
+
+          <g>
+            <circle class="node-pulse" cx="230" cy="360" r="26" fill="rgba(129,140,248,.15)" />
+            <circle cx="230" cy="360" r="15" fill="#1a2352" stroke="#818cf8" stroke-width="2" />
+            <text x="230" y="365" text-anchor="middle" font-size="14" fill="#c7cde8" font-family="sans-serif">&#128200;</text>
+          </g>
+
+          <!-- center node: AI -->
+          <circle cx="240" cy="210" r="46" fill="url(#nodeGrad)" opacity="0.15" />
+          <circle cx="240" cy="210" r="34" fill="#0f1b45" stroke="url(#nodeGrad)" stroke-width="2.5" />
+          <text x="240" y="217" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff" font-family="Lexend, sans-serif">AI</text>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="hero-scroll-cue"><span></span></div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="features">
+  <div class="section-heading">
+    <span class="eyebrow">Simple process</span>
+    <h2>Three Steps to a Sharper Career Plan</h2>
+    <p>No guesswork &mdash; upload once and CareerCoach AI handles the rest.</p>
+  </div>
+
+  <div class="steps-row">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h4>Upload Resume</h4>
+      <p>Add your PDF or DOCX resume in seconds.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h4>AI Analysis</h4>
+      <p>Skills, education, projects and experience are organized automatically.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h4>Grow with Guidance</h4>
+      <p>Get career recommendations and ask the AI coach anything.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES (dark band) ================= -->
+<section class="dark-band">
+  <div class="features" style="padding-top:0; padding-bottom:0;">
+    <div class="section-heading">
+      <span class="eyebrow">What you get</span>
+      <h2>Everything You Need to Grow Your Career</h2>
+      <p>CareerCoach AI helps you understand your resume, discover opportunities and build the right skills.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="bi bi-file-earmark-text"></i></div>
+        <h3>Resume Analysis</h3>
+        <p>Analyze your resume and identify your skills, education, projects and certifications.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="bi bi-compass"></i></div>
+        <h3>Career Guidance</h3>
+        <p>Get AI-powered career recommendations, missing skills and personalized learning paths.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="bi bi-chat-dots"></i></div>
+        <h3>AI Career Coach</h3>
+        <p>Ask questions about careers, skills, interviews and get personalized AI guidance.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="bi bi-speedometer2"></i></div>
+        <h3>Career Dashboard</h3>
+        <p>Track your resume analysis, skills and career progress from one place.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

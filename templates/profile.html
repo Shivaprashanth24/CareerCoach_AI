@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Profile - CareerCoach AI{% endblock %}
+
+{% block content %}
+<div class="profile-shell">
+  <div class="profile-card">
+    <div class="profile-avatar">{{ (user.name or "?")[0]|upper }}</div>
+    <h4>{{ user.name }}</h4>
+    <p class="text-muted">{{ user.email }}</p>
+
+    <div class="profile-table">
+      <table class="table table-borderless mb-0">
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <td>{{ user.name }}</td>
+          </tr>
+          <tr>
+            <th>Email</th>
+            <td>{{ user.email }}</td>
+          </tr>
+          <tr>
+            <th>Uploaded Resume</th>
+            <td>{{ resume.filename if resume else "No resume uploaded" }}</td>
+          </tr>
+          <tr>
+            <th>Analysis Status</th>
+            <td>
+              {% if resume %}
+                <span class="badge bg-success rounded-pill">Completed</span>
+              {% else %}
+                <span class="badge bg-secondary rounded-pill">Pending</span>
+              {% endif %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-4 d-flex gap-2 justify-content-center">
+      <a href="{{ url_for('upload_resume') }}" class="btn btn-primary btn-sm">Upload New Resume</a>
+      <a href="{{ url_for('analysis') }}" class="btn btn-outline-primary btn-sm">View Analysis</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

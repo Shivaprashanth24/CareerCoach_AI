@@ -1,0 +1,681 @@
+{% extends "base.html" %}
+{% block title %}Resume Analysis - CareerCoach AI{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- HEADER -->
+    <div class="analysis-header text-center mb-4">
+
+        <span class="analysis-badge">
+            <i class="bi bi-stars"></i> AI Resume Analysis
+        </span>
+
+        <h1 class="display-5 fw-bold mt-3">
+            Resume Insights
+        </h1>
+
+        <p class="text-muted">
+            Your resume has been analyzed and organized into key career sections.
+        </p>
+
+        {% set filled_sections = (skills|length > 0)|int + (education|length > 0)|int + (experience|length > 0)|int + (projects|length > 0)|int + (certifications|length > 0)|int %}
+        {% set completeness_pct = filled_sections * 20 %}
+        {% set ring_offset = 264 - (264 * completeness_pct / 100) %}
+
+        <div class="d-flex justify-content-center mt-3">
+            <div class="completeness-ring is-light">
+                <svg viewBox="0 0 100 100">
+                    <defs>
+                        <linearGradient id="analysisRingGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#4f46e5" />
+                            <stop offset="100%" stop-color="#06b6d4" />
+                        </linearGradient>
+                    </defs>
+                    <circle class="ring-bg" cx="50" cy="50" r="42" />
+                    <circle
+                        class="ring-fg js-ring"
+                        cx="50" cy="50" r="42"
+                        stroke-dasharray="264"
+                        stroke-dashoffset="264"
+                        data-offset="{{ ring_offset }}"
+                    />
+                </svg>
+                <div class="completeness-ring-label is-light">{{ completeness_pct }}%</div>
+            </div>
+        </div>
+        <p class="text-muted small mb-0">Sections detected: {{ filled_sections }} of 5</p>
+
+    </div>
+
+    <!-- OVERVIEW STRIP -->
+    <div class="overview-strip">
+        <div class="overview-stat">
+            <div class="stat-top">
+                <div class="num">{{ skills|length }}</div>
+            </div>
+            <div class="label">Skills Detected</div>
+            <div class="meter"><div class="meter-fill" style="width: {{ [(skills|length / 15 * 100)|round(0, 'floor'), 100]|min }}%;"></div></div>
+        </div>
+        <div class="overview-stat">
+            <div class="stat-top">
+                <div class="num">{{ education|length }}</div>
+            </div>
+            <div class="label">Education Entries</div>
+            <div class="meter"><div class="meter-fill" style="width: {{ [(education|length / 4 * 100)|round(0, 'floor'), 100]|min }}%;"></div></div>
+        </div>
+        <div class="overview-stat">
+            <div class="stat-top">
+                <div class="num">{{ experience|length }}</div>
+            </div>
+            <div class="label">Experience Entries</div>
+            <div class="meter"><div class="meter-fill" style="width: {{ [(experience|length / 6 * 100)|round(0, 'floor'), 100]|min }}%;"></div></div>
+        </div>
+        <div class="overview-stat">
+            <div class="stat-top">
+                <div class="num">{{ projects|length }}</div>
+            </div>
+            <div class="label">Projects</div>
+            <div class="meter"><div class="meter-fill" style="width: {{ [(projects|length / 6 * 100)|round(0, 'floor'), 100]|min }}%;"></div></div>
+        </div>
+        <div class="overview-stat">
+            <div class="stat-top">
+                <div class="num">{{ certifications|length }}</div>
+            </div>
+            <div class="label">Certifications</div>
+            <div class="meter"><div class="meter-fill" style="width: {{ [(certifications|length / 6 * 100)|round(0, 'floor'), 100]|min }}%;"></div></div>
+        </div>
+    </div>
+
+
+    <!-- PERSONAL DETAILS -->
+    {% if personal and (personal.name or personal.email or personal.phone or personal.location) %}
+    <div class="analysis-card">
+
+        <div class="section-title">
+            <div class="section-icon"><i class="bi bi-person-vcard"></i></div>
+            <h2>Personal Information</h2>
+        </div>
+
+        <div class="personal-info">
+            {% if personal.name %}
+            <div class="info-item">
+                <strong>Name</strong> {{ personal.name }}
+            </div>
+            {% endif %}
+
+            {% if personal.email %}
+            <div class="info-item">
+                <strong>Email</strong> <a href="mailto:{{ personal.email }}">{{ personal.email }}</a>
+            </div>
+            {% endif %}
+
+            {% if personal.phone %}
+            <div class="info-item">
+                <strong>Phone</strong> <a href="tel:{{ personal.phone }}">{{ personal.phone }}</a>
+            </div>
+            {% endif %}
+
+            {% if personal.location %}
+            <div class="info-item">
+                <strong>Location</strong> {{ personal.location }}
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endif %}
+
+
+    <!-- SKILLS -->
+    <div class="analysis-card">
+
+        <div class="section-title">
+            <div class="section-icon"><i class="bi bi-cpu"></i></div>
+            <h2>Skills</h2>
+        </div>
+
+        {% if skills %}
+
+        <div class="skill-container">
+
+            {% for skill in skills %}
+
+            <span class="skill-badge">
+                {{ skill }}
+            </span>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <p class="empty-message">
+            No technical skills detected.
+        </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- EDUCATION -->
+    <div class="analysis-card">
+
+        <div class="section-title">
+            <div class="section-icon"><i class="bi bi-mortarboard"></i></div>
+            <h2>Education</h2>
+        </div>
+
+        {% if education %}
+
+        <div class="timeline">
+
+            {% for item in education %}
+
+            <div class="timeline-item">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-content">
+                    {{ item }}
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <p class="empty-message">
+            Education information was not detected.
+        </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- PROJECTS -->
+    <div class="analysis-card">
+
+        <div class="section-title">
+            <div class="section-icon"><i class="bi bi-kanban"></i></div>
+            <h2>Projects</h2>
+        </div>
+
+        {% if projects %}
+
+        <div class="entry-group" data-max="3">
+
+            {% for project in projects %}
+
+            <div class="resume-entry">
+
+                {% if project and project|length > 0 %}
+
+                <h3>
+                    {{ project[0] }}
+                </h3>
+
+                {% if project|length > 1 %}
+
+                <ul>
+
+                    {% for item in project[1:] %}
+                    {% if item %}
+
+                    <li>
+                        {{ item }}
+                    </li>
+
+                    {% endif %}
+                    {% endfor %}
+
+                </ul>
+
+                {% endif %}
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <p class="empty-message">
+            No projects detected.
+        </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- EXPERIENCE -->
+    <div class="analysis-card">
+
+        <div class="section-title">
+            <div class="section-icon"><i class="bi bi-briefcase"></i></div>
+            <h2>Experience</h2>
+        </div>
+
+        {% if experience %}
+
+        <div class="entry-group" data-max="3">
+
+            {% for entry in experience %}
+
+            <div class="resume-entry">
+
+                {% if entry and entry|length > 0 %}
+
+                <h3>
+                    {{ entry[0] }}
+                </h3>
+
+                {% if entry|length > 1 %}
+
+                <ul>
+
+                    {% for item in entry[1:] %}
+                    {% if item %}
+
+                    <li>
+                        {{ item }}
+                    </li>
+
+                    {% endif %}
+                    {% endfor %}
+
+                </ul>
+
+                {% endif %}
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <p class="empty-message">
+            No experience detected.
+        </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- CERTIFICATIONS -->
+    <div class="analysis-card">
+
+        <div class="section-title">
+            <div class="section-icon"><i class="bi bi-patch-check"></i></div>
+            <h2>Certifications</h2>
+        </div>
+
+        {% if certifications %}
+
+        <ul class="clean-list">
+
+            {% for item in certifications %}
+
+            <li>
+                {{ item }}
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+        {% else %}
+
+        <p class="empty-message">
+            No certifications detected.
+        </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- EXTRA CURRICULAR -->
+    {% if extra_curricular %}
+    <div class="analysis-card">
+
+        <div class="section-title">
+            <div class="section-icon"><i class="bi bi-trophy"></i></div>
+            <h2>Extra Curricular</h2>
+        </div>
+
+        <ul class="clean-list">
+
+            {% for item in extra_curricular %}
+
+            <li>
+                {{ item }}
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+    {% endif %}
+
+
+    <!-- CAREER RECOMMENDATION -->
+    <div class="recommendation-card" id="recommendation">
+
+        <div class="recommendation-header">
+
+            <div>
+
+                <h2>
+                    <i class="bi bi-magic me-1"></i> Career Recommendation
+                </h2>
+
+            </div>
+
+            <button
+                id="generateRecommendation"
+                class="btn btn-primary"
+                onclick="generateRecommendation()">
+
+                <i class="bi bi-stars me-1"></i> Generate with AI
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="recommendationContent"
+            class="recommendation-content">
+
+            <p class="text-muted mb-0">
+                Click "Generate with AI" to receive a personalized career
+                recommendation and learning roadmap.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+// Name -> role_key map for the existing Career Tracker roles (server
+// data, not invented client-side) so a role mentioned in the AI
+// recommendation can link straight into "Confirm & Start Tracking".
+window.__CAREER_ROLE_MAP__ = {{ career_roles_map|tojson }};
+</script>
+
+<script>
+
+/**
+ * Display-only formatting for the AI recommendation HTML.
+ * Does not touch the AI response itself - it only reshapes how
+ * "Name | URL" resource pairs already produced by the backend are
+ * shown:
+ *   - Inside the Certifications section: hide the raw URL and show
+ *     a clean "Open Resource ->" button that opens it in a new tab.
+ *   - Everywhere else (e.g. Recommended Learning Resources): show
+ *     the actual URL as visible, clickable link text.
+ *
+ * Handles both layouts the AI produces:
+ *   - one "Name | URL" pair per list item (e.g. Step 1, Certifications)
+ *   - several "Name | URL" pairs packed into a single line, separated
+ *     by " - " (e.g. Steps 2-5: "Angular Docs | url - FCC Guide | url")
+ */
+function formatRecommendationLinks(html) {
+
+    if (!html) return html;
+
+    const container = document.createElement("div");
+    container.innerHTML = html;
+
+    // An element that is *entirely* one "Name | URL" pair (e.g. Step 1
+    // and Certifications, where each resource gets its own <li>).
+    const singlePairRegex = /^([A-Za-z0-9][^|\n]{1,120}?)\s*\|\s*(https?:\/\/\S+)\s*$/i;
+
+    // Several "Name | URL" pairs packed into one line, each introduced
+    // by a bullet marker (e.g. Steps 2-5: "Angular Docs | url - FCC
+    // Guide | url"). Requires an explicit bullet so label text like
+    // "Recommended Learning Resources:" is never swallowed into a name.
+    const bulletPairRegex = /[-•*]\s*([A-Za-z0-9][^|\n]{1,90}?)\s*\|\s*(https?:\/\/\S+)/g;
+
+    const blockSelector = "p, li, h1, h2, h3, h4, h5, h6";
+    let inCertificationSection = false;
+
+    container.querySelectorAll(blockSelector).forEach((el) => {
+
+        const rawText = (el.textContent || "").trim();
+
+        const singleMatch = rawText.match(singlePairRegex);
+
+        if (singleMatch) {
+
+            const name = singleMatch[1].trim() || "Resource";
+            const url = singleMatch[2].replace(/[).,;]+$/, "").trim();
+
+            if (/certificat/i.test(rawText)) {
+                inCertificationSection = true;
+            }
+
+            el.innerHTML = buildResourceItemHtml(name, url, inCertificationSection);
+            el.classList.add("resource-line");
+            return;
+        }
+
+        const matches = [...rawText.matchAll(bulletPairRegex)];
+
+        if (matches.length === 0) {
+            // No resource pairs here - just a section heading or plain
+            // text. Track whether we're inside the Certifications
+            // section for the elements that follow.
+            inCertificationSection = /certificat/i.test(rawText);
+            return;
+        }
+
+        // This element mentions certifications alongside its resource
+        // pairs (e.g. a "🏆 CERTIFICATIONS" heading combined with items).
+        if (/certificat/i.test(rawText)) {
+            inCertificationSection = true;
+        }
+
+        const leadText = rawText.slice(0, matches[0].index).trim();
+        const lastMatch = matches[matches.length - 1];
+        const trailingText = rawText.slice(lastMatch.index + lastMatch[0].length).trim();
+
+        let out = "";
+
+        if (leadText) {
+            out += `<span class="resource-label">${escapeHtmlForDisplay(leadText)}</span>`;
+        }
+
+        matches.forEach((m) => {
+            const name = m[1].trim() || "Resource";
+            const url = m[2].replace(/[).,;]+$/, "").trim();
+            out += buildResourceItemHtml(name, url, inCertificationSection);
+        });
+
+        if (trailingText) {
+            out += `<span class="resource-label">${escapeHtmlForDisplay(trailingText)}</span>`;
+        }
+
+        el.innerHTML = out;
+        el.classList.add("resource-line");
+
+    });
+
+    return container.innerHTML;
+
+}
+
+function buildResourceItemHtml(name, url, isCertification) {
+
+    const safeName = escapeHtmlForDisplay(name);
+    const safeUrl = escapeHtmlForDisplay(url);
+    const safeHref = url.replace(/"/g, "&quot;");
+
+    if (isCertification) {
+        return `
+            <span class="resource-item resource-item-cert">
+                <span class="resource-name">${safeName}</span>
+                <a href="${safeHref}" target="_blank" rel="noopener noreferrer" class="resource-open-btn">
+                    Open Resource <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+            </span>
+        `;
+    }
+
+    return `
+        <span class="resource-item">
+            <span class="resource-name">${safeName}</span>
+            <a href="${safeHref}" target="_blank" rel="noopener noreferrer" class="resource-link">${safeUrl}</a>
+        </span>
+    `;
+
+}
+
+function escapeHtmlForDisplay(str) {
+    const div = document.createElement("div");
+    div.textContent = str == null ? "" : str;
+    return div.innerHTML;
+}
+
+/**
+ * Turns a recognized Career Tracker role name (e.g. "Data Engineer")
+ * that appears in the AI recommendation text into a link that opens
+ * the Career Tracker with that role pre-selected, ready for
+ * "Confirm & Start Tracking". Display-only — never changes the
+ * recommendation text itself, and only links names that already
+ * exist in the real role catalog (window.__CAREER_ROLE_MAP__).
+ */
+function linkKnownCareerRoles(html) {
+    if (!html || !window.__CAREER_ROLE_MAP__) return html;
+
+    const roleMap = window.__CAREER_ROLE_MAP__;
+    const roleNames = Object.keys(roleMap).sort((a, b) => b.length - a.length);
+    if (!roleNames.length) return html;
+
+    const container = document.createElement("div");
+    container.innerHTML = html;
+
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
+    const textNodes = [];
+    let node;
+    while ((node = walker.nextNode())) {
+        if (node.parentElement && node.parentElement.closest("a")) continue;
+        textNodes.push(node);
+    }
+
+    textNodes.forEach((textNode) => {
+        const text = textNode.nodeValue;
+        let matchedName = null;
+        let matchIndex = -1;
+        let matchLength = 0;
+
+        for (const name of roleNames) {
+            const re = new RegExp("\\b" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "i");
+            const m = text.match(re);
+            if (m) {
+                matchedName = name;
+                matchIndex = m.index;
+                matchLength = m[0].length;
+                break;
+            }
+        }
+
+        if (!matchedName) return;
+
+        const roleKey = roleMap[matchedName];
+        const before = text.slice(0, matchIndex);
+        const matchedText = text.slice(matchIndex, matchIndex + matchLength);
+        const after = text.slice(matchIndex + matchLength);
+
+        const frag = document.createDocumentFragment();
+        if (before) frag.appendChild(document.createTextNode(before));
+
+        const link = document.createElement("a");
+        link.href = "/career-dashboard?role=" + encodeURIComponent(roleKey);
+        link.className = "role-suggestion-link";
+        link.textContent = matchedText;
+        link.title = "Start tracking your progress toward " + matchedText;
+        frag.appendChild(link);
+
+        if (after) frag.appendChild(document.createTextNode(after));
+
+        textNode.parentNode.replaceChild(frag, textNode);
+    });
+
+    return container.innerHTML;
+}
+
+async function generateRecommendation() {
+
+    const button =
+        document.getElementById("generateRecommendation");
+
+    const content =
+        document.getElementById("recommendationContent");
+
+    button.disabled = true;
+
+    button.innerHTML = "Generating...";
+
+    content.innerHTML = `
+        <div class="loading-box">
+            <div class="spinner-border"></div>
+            <p>Analyzing your skills and career path...</p>
+        </div>
+    `;
+
+    try {
+
+        const response =
+            await fetch("/api/recommendation");
+
+        const data =
+            await response.json();
+
+        content.innerHTML =
+            linkKnownCareerRoles(formatRecommendationLinks(data.reply)) ||
+            "<p>No recommendation generated.</p>";
+
+    } catch (error) {
+
+        content.innerHTML = `
+            <div class="alert alert-danger">
+                Unable to generate recommendation.
+                Please try again.
+            </div>
+        `;
+
+    } finally {
+
+        button.disabled = false;
+
+        button.innerHTML = '<i class="bi bi-stars me-1"></i> Generate with AI';
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

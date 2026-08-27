@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Login - CareerCoach AI{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+
+  <!-- Visual side -->
+  <div class="auth-visual">
+    <span class="hero-badge"><span class="dot"></span> AI-Powered Career Platform</span>
+    <h2>Welcome Back to<br /><span class="grad">CareerCoach AI</span></h2>
+    <p>Log in to continue your resume analysis, career roadmap and AI coaching sessions.</p>
+
+    <ul class="auth-points">
+      <li><i class="bi bi-check-circle-fill"></i> Pick up where you left off</li>
+      <li><i class="bi bi-check-circle-fill"></i> Track your career progress</li>
+      <li><i class="bi bi-check-circle-fill"></i> Chat with your AI coach anytime</li>
+    </ul>
+  </div>
+
+  <!-- Form side -->
+  <div class="auth-form-side">
+    <div class="auth-card">
+      <div class="auth-icon"><i class="bi bi-shield-lock-fill"></i></div>
+      <h4>Welcome back</h4>
+      <p class="auth-subtitle">Login to continue your career journey.</p>
+
+      <form method="POST" action="{{ url_for('login') }}">
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <div class="input-icon-group">
+            <i class="bi bi-envelope"></i>
+            <input type="email" name="email" class="form-control" required />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <div class="input-icon-group">
+            <i class="bi bi-lock"></i>
+            <input type="password" name="password" class="form-control" required />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+
+      <p class="auth-switch">
+        New user? <a href="{{ url_for('register') }}">Register here</a>
+      </p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
